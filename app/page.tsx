@@ -7,9 +7,7 @@ import type { Message } from "ai"
 import Bubble from "./components/Bubble"
 import LoadingBubble from "./components/LoadingBubble"
 import PromptSuggestionRow from "./components/PromptSuggestionRow"
-
-
-
+import ChatbotWidget from "./components/ChatbotWidget/ChatbotWidget";
 
 const Home = () => {
     const { append, isLoading, messages, input, handleInputChange, handleSubmit} = useChat()
@@ -49,6 +47,7 @@ const Home = () => {
                     <input className = "question-box" onChange = {handleInputChange} value = {input} placeholder = "Ask me a question"/>
                     <input type = "submit"/>
             </form>
+            {/* <ChatbotWidget/> */}
         </main>
     )
 }
