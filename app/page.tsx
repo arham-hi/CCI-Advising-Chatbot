@@ -1,7 +1,6 @@
 "use client"
 
 import Image from "next/image"
-import logo from "./assets/gojo pfp.jpg"
 import { useChat } from "ai/react"
 import type { Message } from "ai"
 import Bubble from "./components/Bubble"
@@ -11,8 +10,6 @@ import ChatbotWidget from "./components/ChatbotWidget/ChatbotWidget";
 
 const Home = () => {
     const { append, isLoading, messages, input, handleInputChange, handleSubmit} = useChat()
-
-
     const noMessages = !messages || messages.length === 0
 
     const handlePrompt = (promptText) => {
@@ -24,31 +21,10 @@ const Home = () => {
         append(msg)
     }
 
-
     return (
-        <main>
-            <Image src = {logo} width="250" alt = "advisor"/>
-            <section className = {noMessages? "":"populated"}>
-                {noMessages ?(
-                    <>
-                    <p className = "starter-text">CCI Chatbot for advising questions.</p>
-                    <br/>
-                    <PromptSuggestionRow onPromptClick={handlePrompt}/>
-                    </>
-                ):(
-                    <>
-                    {messages.map((message, index) => <Bubble key = {`message-${index}`} message = {message} />)}
-                    {isLoading && <LoadingBubble/>}
-                    </>
-                )}
-                
-            </section>
-            <form onSubmit = {handleSubmit}>
-                    <input className = "question-box" onChange = {handleInputChange} value = {input} placeholder = "Ask me a question"/>
-                    <input type = "submit"/>
-            </form>
+        <div>      
             <ChatbotWidget/>
-        </main>
+        </div>
     )
 }
 

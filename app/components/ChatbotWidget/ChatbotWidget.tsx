@@ -2,6 +2,8 @@
 import { useState } from "react";
 import { useChat } from "ai/react";
 import "./chatbot.css";
+import Image from "next/image";
+import logo from "../../assets/Charlotte_49ers_logo.png";
 
 export default function ChatbotWidget() {
     const [open, setOpen] = useState(false);
@@ -23,7 +25,7 @@ export default function ChatbotWidget() {
             )}
 
         {/* Floating Button */}
-        <button  className={`chatbot-toggler ${open ? "active" : ""}`}  onClick={() => setOpen(!open)}> 💬 </button>
+        <button  className={`chatbot-toggler ${open ? "active" : ""}`}  onClick={() => setOpen(!open)}> <Image src={logo} alt="Chatbot" width={24} height={24} /> </button>
 
         {/* Chat Window */}
         <div className={`chatbot ${open ? "show" : ""}`}>
@@ -35,7 +37,7 @@ export default function ChatbotWidget() {
         <ul className="chatbox">
           {messages.length === 0 && (
             <li className="chat incoming">
-              <span>C</span>
+              <span><Image src={logo} alt="Chatbot" width={24} height={24} /></span>
               <p>Hello Niner, how can I help you today?</p>
             </li>
           )}
@@ -54,7 +56,7 @@ export default function ChatbotWidget() {
 
           {isLoading && (
             <li className="chat incoming">
-              <span>🤖</span>
+              <span><Image src={logo} alt="Chatbot" width={24} height={24} /></span>
               <p>Thinking...</p>
             </li>
           )}
@@ -65,7 +67,7 @@ export default function ChatbotWidget() {
           <textarea
             value={input}
             onChange={handleInputChange}
-            placeholder="Enter a message..."
+            placeholder="Ask a question..."
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();
