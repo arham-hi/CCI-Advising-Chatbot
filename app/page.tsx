@@ -47,7 +47,7 @@ const Home = () => {
                     <input className = "question-box" onChange = {handleInputChange} value = {input} placeholder = "Ask me a question"/>
                     <input type = "submit"/>
             </form>
-            {/* <ChatbotWidget/> */}
+            <ChatbotWidget/>
         </main>
     )
 }
