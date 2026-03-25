@@ -1,9 +1,6 @@
 import "./global.css"
 
-export const metadata = {
-    title: "CCI-Advisor",
-    description: "online advisor chatbot"
-}
+export const metadata = {title: "CCI-Advisor", description: "online advisor chatbot"}
 
 const RootLayout = ({ children }) => {
     return (

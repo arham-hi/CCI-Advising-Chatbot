@@ -18,8 +18,8 @@ body {
   right: 35px;
   outline: none;
   border: none;
-  height: 60px;          /* was 50px */
-  width: 60px;           /* was 50px */
+  height: 60px;
+  width: 60px;
   display: flex;
   cursor: pointer;
   align-items: center;
@@ -29,15 +29,16 @@ body {
   transition: transform 1s cubic-bezier(0.22, 1, 0.36, 1);
   box-shadow: 0 4px 16px rgba(4, 106, 56, 0.35);
   padding: 0;
-  overflow: hidden;
+  overflow: hidden; /* keep white circle clipped to the button edge */
 }
 
-/* White circle behind the logo inside the toggle */
+/* FIX 2: White circle — identical style to the in-chat bot avatar */
 .chatbot-toggler .logo-wrap {
-  width: 42px;
-  height: 42px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   background: #fff;
+  border: 2px solid #046A38;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -45,9 +46,10 @@ body {
   flex-shrink: 0;
 }
 
+.chatbot-toggler .logo-wrap img,
 .chatbot-toggler img {
-  width: 30px;
-  height: 30px;
+  width: 28px;
+  height: 28px;
   object-fit: contain;
   display: block;
 }
@@ -56,29 +58,16 @@ body {
   transform: rotate(360deg);
 }
 
-.chatbot-toggler span {
-  color: #fff;
-  position: absolute;
-}
-
-.chatbot-toggler span:last-child,
-.chatbot-toggler.active span:first-child {
-  opacity: 0;
-}
-
-.chatbot-toggler.active span:last-child {
-  opacity: 1;
-}
-
 /* ── Chat Window ── */
 .chatbot {
   position: fixed;
   right: 35px;
   bottom: 100px;
   width: 420px;
-
-  /* Prevent the window from growing beyond the viewport on zoom */
   max-width: calc(100vw - 40px);
+
+  /* FIX 1: minimum height so an empty window looks like a proper chat */
+  min-height: 480px;
   max-height: calc(100vh - 120px);
 
   background: #fff;
@@ -129,8 +118,8 @@ header h2 {
 .chatbot .chatbox {
   overflow-y: auto;
   flex: 1;
-  min-height: 0;          /* critical for flex scroll to work */
-  padding: 30px 20px 100px;
+  min-height: 0;
+  padding: 30px 20px 80px;
 }
 
 .chatbot :where(.chatbox, textarea)::-webkit-scrollbar {
@@ -158,7 +147,7 @@ header h2 {
   justify-content: flex-end;
 }
 
-/* Circular bot avatar with white background */
+/* Circular bot avatar */
 .chatbox .incoming .avatar-wrap {
   width: 36px;
   height: 36px;
@@ -181,7 +170,7 @@ header h2 {
   display: block;
 }
 
-/* Fallback span (letter "C") — keep circular */
+/* Fallback letter span */
 .chatbox .incoming span {
   width: 36px;
   height: 36px;
@@ -191,7 +180,7 @@ header h2 {
   line-height: 36px;
   align-self: flex-end;
   background: #046A38;
-  border-radius: 50%;    /* was 4px — now circular */
+  border-radius: 50%;
   margin: 0 10px 7px 0;
   flex-shrink: 0;
 }
@@ -218,45 +207,47 @@ header h2 {
 }
 
 /* ── Input Area ── */
+/* FIX 4: green tint on the entire input bar, not just the textarea */
 .chatbot .chat-input {
   display: flex;
-  align-items: center;      /* vertically center textarea + button */
+  align-items: flex-end;   /* button stays flush to bottom as textarea grows */
   gap: 8px;
   position: absolute;
   bottom: 0;
   width: 100%;
-  background: #fff;
-  padding: 10px 16px;
-  border-top: 1px solid #ddd;
+  background: #f4fbf7;     /* ← green tint covers the whole container */
+  padding: 5px 16px;
+  border-top: 1px solid #c6e8d6;
 }
 
+/* FIX 3: auto-expanding textarea — no internal scroll until max-height */
 .chat-input textarea {
   flex: 1;
-  height: 42px;
   min-height: 42px;
-  max-height: 180px;
-  border: 1.5px solid #c6e8d6;   /* subtle green border */
+  max-height: 120px;       /* ~4 lines, then scroll */
+  height: auto;
+  border: 1.5px solid #c6e8d6;
   border-radius: 8px;
   outline: none;
   resize: none;
+  overflow-y: hidden;      /* JS drives the height; no scrollbar visible below max */
   padding: 10px 12px;
   font-size: 0.95rem;
-  background: #f4fbf7;            /* very light green tint */
+  background: #fff;
   color: #111;
-  line-height: 1.4;
+  line-height: 1.5;
   transition: border-color 0.2s;
 }
 
 .chat-input textarea:focus {
   border-color: #046A38;
-  background: #edf7f2;
 }
 
 .chat-input textarea::placeholder {
   color: #9dbfac;
 }
 
-/* Send button — always visible and perfectly centered */
+/* Send button */
 .chat-input .send-btn {
   display: flex;
   align-items: center;
@@ -275,6 +266,7 @@ header h2 {
   transition: opacity 0.2s, transform 0.15s;
   line-height: 1;
   padding: 0;
+  margin-bottom: 2px;      /* tiny nudge to optically align with textarea bottom */
 }
 
 .chat-input textarea:valid ~ .send-btn {
@@ -285,7 +277,7 @@ header h2 {
   transform: scale(1.08);
 }
 
-/* Hide the old span-based send icon if it still exists */
+/* Hide legacy span send icon if still present */
 .chat-input > span {
   display: none;
 }
@@ -317,6 +309,7 @@ header h2 {
     right: 0;
     bottom: 0;
     height: 100%;
+    min-height: unset;
     max-height: 100vh;
     border-radius: 0;
     width: 100%;
