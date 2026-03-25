@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useChat } from "ai/react";
 import "./chatbot.css";
 import Image from "next/image";
@@ -9,6 +9,7 @@ export default function ChatbotWidget() {
   const [open, setOpen] = useState(false);
   const [showHint, setShowHint] = useState(true);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const chatboxRef  = useRef<HTMLUListElement>(null);
 
   const { messages, input, handleInputChange, handleSubmit, isLoading } =
     useChat();
@@ -18,22 +19,28 @@ export default function ChatbotWidget() {
     setShowHint(false);
   };
 
-  // FIX 3: auto-expand textarea height as user types
+  // Auto-scroll to bottom when new messages arrive
+  useEffect(() => {
+    if (chatboxRef.current) {
+      chatboxRef.current.scrollTop = chatboxRef.current.scrollHeight;
+    }
+  }, [messages, isLoading]);
+
+  // Auto-expand textarea as user types, up to max-height
   const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     handleInputChange(e);
     const el = e.target;
-    el.style.height = "auto";              // reset first
-    el.style.height = `${el.scrollHeight}px`; // grow to content
-    // CSS max-height + overflow-y: auto kicks in beyond 120px
+    el.style.height = "auto";
+    el.style.height = `${Math.min(el.scrollHeight, 140)}px`;
   };
 
   const handleSend = (
-    e:
-      | React.FormEvent<HTMLFormElement>
-      | React.KeyboardEvent<HTMLTextAreaElement>
+    e: React.FormEvent<HTMLFormElement> | React.KeyboardEvent<HTMLTextAreaElement>
   ) => {
+    e.preventDefault();
+    if (!input.trim()) return;
     handleSubmit(e as React.FormEvent<HTMLFormElement>);
-    // Reset textarea height after send
+    // Reset textarea after send
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
     }
@@ -54,29 +61,50 @@ export default function ChatbotWidget() {
         onClick={() => (open ? setOpen(false) : handleOpen())}
         aria-label="Toggle chatbot"
       >
-        {/* FIX 2: same white-circle avatar as the in-chat bot */}
         <span className="logo-wrap">
-          <Image src={logo} alt="CCI Chatbot" width={28} height={28} />
+          <Image src={logo} alt="CCI Chatbot" width={26} height={26} priority />
         </span>
       </button>
 
       {/* Chat window */}
-      <div className={`chatbot ${open ? "show" : ""}`}>
+      <div className={`chatbot ${open ? "show" : ""}`} role="dialog" aria-label="CCI Advising Chatbot">
+
+        {/* Header */}
         <header>
-          <h2>CCI Chatbot</h2>
-          <span onClick={() => setOpen(false)}>✖</span>
+          <div className="header-avatar">
+            <Image src={logo} alt="Bot" width={22} height={22} />
+          </div>
+          <div className="header-text">
+            <h2>CCI Advising Bot</h2>
+            <p>UNC Charlotte · College of Computing & Informatics</p>
+          </div>
+          <div className="header-dot" aria-hidden="true" />
+          <button
+            className="close-btn"
+            onClick={() => setOpen(false)}
+            aria-label="Close chatbot"
+          >
+            ✕
+          </button>
         </header>
 
-        <ul className="chatbox">
+        {/* Messages */}
+        <ul className="chatbox" ref={chatboxRef}>
+          {/* Welcome message */}
           {messages.length === 0 && (
             <li className="chat incoming">
               <span className="avatar-wrap">
-                <Image src={logo} alt="Bot" width={24} height={24} />
+                <Image src={logo} alt="Bot" width={18} height={18} />
               </span>
-              <p>Hello Niner, how can I help you today?</p>
+              <p>
+                Hey there, Niner! 👋{"\n"}
+                I can help with CCI majors, courses, degree requirements, and advising questions.{"\n\n"}
+                What can I help you with?
+              </p>
             </li>
           )}
 
+          {/* Message history */}
           {messages.map((msg, i) => (
             <li
               key={i}
@@ -84,30 +112,33 @@ export default function ChatbotWidget() {
             >
               {msg.role !== "user" && (
                 <span className="avatar-wrap">
-                  <Image src={logo} alt="Bot" width={24} height={24} />
+                  <Image src={logo} alt="Bot" width={18} height={18} />
                 </span>
               )}
               <p>{msg.content}</p>
             </li>
           ))}
 
+          {/* Typing indicator */}
           {isLoading && (
             <li className="chat incoming">
               <span className="avatar-wrap">
-                <Image src={logo} alt="Bot" width={24} height={24} />
+                <Image src={logo} alt="Bot" width={18} height={18} />
               </span>
-              <p>Thinking…</p>
+              <div className="typing-dots">
+                <span /><span /><span />
+              </div>
             </li>
           )}
         </ul>
 
-        {/* Input form */}
+        {/* Input */}
         <form className="chat-input" onSubmit={handleSend}>
           <textarea
             ref={textareaRef}
             value={input}
             onChange={handleTextareaChange}
-            placeholder="Ask a question..."
+            placeholder="Ask about courses, majors, or requirements…"
             rows={1}
             required
             onKeyDown={(e) => {
@@ -117,10 +148,11 @@ export default function ChatbotWidget() {
               }
             }}
           />
-          <button type="submit" className="send-btn" aria-label="Send">
+          <button type="submit" className="send-btn" aria-label="Send message">
             ➤
           </button>
         </form>
+
       </div>
     </>
   );
