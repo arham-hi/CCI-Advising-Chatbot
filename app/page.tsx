@@ -5,7 +5,7 @@ import { useChat } from "ai/react"
 import type { Message } from "ai"
 import Bubble from "./components/Bubble"
 import LoadingBubble from "./components/LoadingBubble"
-import PromptSuggestionRow from "./components/PromptSuggestionRow"
+// import PromptSuggestionRow from "./components/PromptSuggestionRow"
 import ChatbotWidget from "./components/ChatbotWidget/ChatbotWidget";
 
 const Home = () => {

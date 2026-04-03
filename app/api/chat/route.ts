@@ -140,7 +140,5 @@ STUDENT QUESTION: ${latestMessage}
     // @ts-ignore
     const stream = OpenAIStream(response as any)
     return new StreamingTextResponse(stream)
-  } catch (e) {
-    throw e
-  }
+  } catch (e) { throw e }
 }

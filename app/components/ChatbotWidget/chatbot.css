@@ -438,3 +438,79 @@ scrollbar-gutter: stable;
   .close-btn { display: flex; }
   .chatbot .chatbox { padding: 14px 12px 12px; }
 }
+
+/* ── Avatar Mode Toggle Button ──────────────────────────── */
+.avatar-toggle-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-full);
+  background: rgba(255,255,255,0.15);
+  border: none;
+  outline: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+  flex-shrink: 0;
+  transition: background 0.15s, transform 0.15s;
+  margin-right: 4px;
+}
+ 
+.avatar-toggle-btn:hover {
+  background: rgba(255,255,255,0.28);
+  transform: scale(1.08);
+}
+ 
+.avatar-toggle-btn.active {
+  background: rgba(255,255,255,0.3);
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.4);
+}
+ 
+/* ── Avatar Panel ───────────────────────────────────────── */
+.avatar-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 20px 16px 16px;
+  background: linear-gradient(160deg, #f2faf6 0%, #ffffff 100%);
+  border-bottom: 1px solid var(--green-border);
+  animation: avatarSlideDown 0.25s cubic-bezier(0.34, 1.4, 0.64, 1);
+  flex-shrink: 0;
+}
+ 
+@keyframes avatarSlideDown {
+  from { opacity: 0; transform: translateY(-10px); max-height: 0; }
+  to   { opacity: 1; transform: translateY(0);     max-height: 300px; }
+}
+ 
+.avatar-face-wrap {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+ 
+.avatar-canvas {
+  border-radius: var(--radius-full);
+  display: block;
+}
+ 
+.avatar-bubble-wrap {
+  width: 100%;
+  max-width: 320px;
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+ 
+.avatar-idle-text {
+  font-size: 0.78rem;
+  color: var(--gray-500);
+  text-align: center;
+  font-style: italic;
+}
